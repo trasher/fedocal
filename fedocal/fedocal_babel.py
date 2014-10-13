@@ -23,15 +23,33 @@
  MA 02110-1301, USA.
 """
 
+import os
+from babel import dates, numbers, support, Locale
 
 class FedocalBabel(object):
     """Wrapper for Babel class, if flask-babel is missing"""
 
-    def __init__(self):
-        pass
+    def __init__(self, app):
+        app.jinja_env.add_extension('jinja2.ext.i18n')
+        app.jinja_env.install_gettext_callables(
+            lambda x: get_translations().ugettext(x),
+            lambda s, p, n: get_translations().ungettext(s, p, n),
+            newstyle=True
+        )
 
     def localeselector(self, f):
         return f
+
+
+def get_translations():
+    """Returns the correct gettext translations that should be used for
+    this request.  This will never fail and return a dummy translation
+    object if used outside of the request or if a translation cannot be
+    found.
+    """
+    dirname = os.path.join('translations')
+    translations = support.Translations.load(dirname, [get_locale()])
+    return translations
 
 
 def get_babel(app):
@@ -39,7 +57,7 @@ def get_babel(app):
         from flask.ext.babel import Babel
         return Babel(app)
     except:
-        return FedocalBabel()
+        return FedocalBabel(app)
 
 
 def gettext(string, **variables):
