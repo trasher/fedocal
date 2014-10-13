@@ -31,7 +31,7 @@ class FedocalBabel(object):
         pass
 
     def localeselector(self, f):
-        pass
+        return f
 
 
 def get_babel(app):
