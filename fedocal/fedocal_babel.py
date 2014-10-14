@@ -66,7 +66,7 @@ def gettext(string, **variables):
         from flask.ext.babel import gettext
         return gettext(string, variables)
     except:
-        return string
+        return string % variables
 
 
 def lazy_gettext(string, **variables):
@@ -75,7 +75,7 @@ def lazy_gettext(string, **variables):
         from flask.ext.babel import lazy_gettext
         return lazy_gettext(string, variables)
     except:
-        return string
+        return string % variables
 
 
 def format_datetime(datetime=None, format=None, rebase=True):
